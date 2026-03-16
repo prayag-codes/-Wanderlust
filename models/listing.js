@@ -9,6 +9,11 @@ const listingSchema = new Schema({
     description: String,
     iamge: {
         type: String,
+        default : "https://unsplash.com/photos/aerial-view-of-a-coastal-city-with-mountains-and-ocean-uaHQoE-rUL0",
+        set: (v) => 
+            v === " " 
+        ? "https://unsplash.com/photos/aerial-view-of-a-coastal-city-with-mountains-and-ocean-uaHQoE-rUL0" 
+        : v,
 
     },
     price: Number,
@@ -17,4 +22,4 @@ const listingSchema = new Schema({
 });
 
 const Listing = mongoose.model("Listing", listingSchema);
-module.export = Listing;
+module.exports = Listing;
