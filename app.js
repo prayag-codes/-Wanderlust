@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 const path = require("path");
+const methodOverride = require("methodOverride");
 
 
 const Listing = require("../-Wanderlust/models/listing.js");
@@ -23,6 +24,7 @@ async function main() {
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
 
 app.get("/" , (req,res) => {
     res.send("Hello World 14 March");
@@ -44,6 +46,21 @@ app.get("/listings/:id", async (req, res) => {
     let {id} = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs", { listing });
+});
+
+// Create Route
+app.post("/listings", async (req, res) => {
+    console.log(req.body);
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect("/listings");
+});
+
+//Edit Route
+app.get("/listings/:id/edit", async (req, res) => {
+    let {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit.ejs", { listing });
 });
 
 // app.get("/testListing", async (req,res) => {
