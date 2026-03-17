@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 const path = require("path");
-const methodOverride = require("methodOverride");
+const methodOverride = require("method-override");
 
 
 const Listing = require("../-Wanderlust/models/listing.js");
@@ -53,7 +53,7 @@ app.post("/listings", async (req, res) => {
     console.log(req.body);
     const newListing = new Listing(req.body.listing);
     await newListing.save();
-    res.redirect("/listings");
+    res.redirect("/listings"); //  redirect ka  matlab hian ki kaam hone ke baad vapas ye page par return aa jao ✨
 });
 
 //Edit Route
@@ -62,6 +62,14 @@ app.get("/listings/:id/edit", async (req, res) => {
     const listing = await Listing.findById(id);
     res.render("listings/edit.ejs", { listing });
 });
+
+// Update Route
+app.put("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndUpdate(id, {...req.body.listing});  // yaha 2 parameter pass kiya hain 👉(id, {...req.body.listing})
+    res.redirect(`/listings/${id}`);
+});
+
 
 // app.get("/testListing", async (req,res) => {
 //     let sampleListing = new Listing({
