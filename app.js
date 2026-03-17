@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const ejs = require("ejs");
 const path = require("path");
 const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
 
 
 const Listing = require("../-Wanderlust/models/listing.js");
