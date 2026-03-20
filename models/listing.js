@@ -7,15 +7,19 @@ const listingSchema = new Schema({
         required: true,
     },
     description: String,
-    iamge: {
-        type: String,
-        default : "https://unsplash.com/photos/aerial-view-of-a-coastal-city-with-mountains-and-ocean-uaHQoE-rUL0",
-        set: (v) => 
-            v === " " 
-        ? "https://unsplash.com/photos/aerial-view-of-a-coastal-city-with-mountains-and-ocean-uaHQoE-rUL0" 
-        : v,
+    // iamge: {
+    //     type: String,
+    //     default : "https://unsplash.com/photos/aerial-view-of-a-coastal-city-with-mountains-and-ocean-uaHQoE-rUL0",
+    //     set: (v) => 
+    //         v === " " 
+    //     ? "https://unsplash.com/photos/aerial-view-of-a-coastal-city-with-mountains-and-ocean-uaHQoE-rUL0" 
+    //     : v,
 
-    },
+    // },
+    image: {
+  url: String,
+  filename: String,
+},
     price: Number,
     location: String,
     country: String,
