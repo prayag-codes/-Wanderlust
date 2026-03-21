@@ -7,7 +7,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 
 
-const Listing = require("../-Wanderlust/models/listing.js");
+const Listing = require("./models/listing.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
@@ -27,11 +27,11 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/" , (req,res) => {
-    res.send("Hello World 14 March");
-});
+// app.get("/" , (req,res) => {
+//     res.send("Hello World 14 March");
+// });
 
 //Index Route
 app.get("/listings", async (req, res) => {
@@ -45,10 +45,33 @@ app.get("/listings/new" , (req, res) => {
 });
 
 //Show Route
+// app.get("/listings/:id", async (req, res) => {
+//     let {id} = req.params;
+//     const listing = await Listing.findById(id);
+//     console.log("Listing =", listing);
+//     res.render("listings/show.ejs", { listing });
+// });
+
 app.get("/listings/:id", async (req, res) => {
-    let {id} = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listings/show.ejs", { listing });
+    try {
+        console.log("SHOW ROUTE HIT");
+
+        let { id } = req.params;
+        console.log("ID =", id);
+
+        const listing = await Listing.findById(id);
+        console.log("Listing =", listing);
+
+        if (!listing) {
+            return res.send("Listing not found");
+        }
+
+        res.render("listings/show.ejs", { listing });
+
+    } catch (err) {
+        console.log("ERROR =", err);
+        res.send(err.message);
+    }
 });
 
 // Create Route
