@@ -1,6 +1,6 @@
 body {
     font-family: "Plus Jakarta Sans", sans-serif !important;
-    display: flex;
+    display:flex;
     flex-direction: column;
     min-height: 100vh;
 
@@ -119,11 +119,11 @@ body {
 }
 
 .btns {
-    display: flex;
+    display:flex;
 
 }
 
 .show-card {
-    padding-left: 0;
-    padding-right: 0;
+    padding-left:0;
+    padding-right:0;
 }
