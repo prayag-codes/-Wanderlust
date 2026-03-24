@@ -5,6 +5,8 @@ const ejs = require("ejs");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 
 const Listing = require("./models/listing.js");
@@ -75,12 +77,11 @@ app.get("/listings/:id", async (req, res) => {
 });
 
 // Create Route
-app.post("/listings", async (req, res) => {
-    console.log(req.body);
+app.post("/listings", wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
-    res.redirect("/listings"); //  redirect ka  matlab hian ki kaam hone ke baad vapas ye page par return aa jao ✨
-});
+    res.redirect("/listings");  //  redirect ka  matlab hian ki kaam hone ke baad vapas ye page par return aa jao ✨
+}));
 
 //Edit Route
 app.get("/listings/:id/edit", async (req, res) => {
@@ -116,6 +117,15 @@ app.delete("/listings/:id", async (req, res) => {
 //     console.log("Sample was Saved");
 //     res.send("Successful Testing");
 // });
+
+app.use((req, res, next) => {
+    next(new ExpressError(404, "Page Not Found!"));
+});
+
+app.use((err, req, res, next) => {
+    let {statusCode, message} = err;
+    res.status(statusCode).send(message);
+});
 
 app.listen(8080, () => {
     console.log("Sever is listening to port 8080");
