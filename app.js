@@ -132,6 +132,9 @@ app.post("/listings/:id/reviews", async (req,res) => {
     return res.redirect(`/listings/${listing._id}`);   
 
 });
+
+
+// This is just the sample for testing the listing model and saving it to the database, you can remove this code after testing is done.
 // app.get("/testListing", async (req,res) => {
 //     let sampleListing = new Listing({
 //         title: "My New Villa",
