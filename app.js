@@ -7,7 +7,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const { listingSchema } = require("./schema.js");
+const { listingSchema , reveiewSchema} = require("./schema.js");
 
 
 const Listing = require("./models/listing.js");
@@ -41,12 +41,22 @@ app.get("/" , (req,res) => {
 const validateListing = (req, res, next) => {
     let {error} = listingSchema.validate(req.body);
     if(error) {
-        throw new ExpressError (404, result.error);
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError (404, errMsg);
     } else {
         next();
     }
 }
 
+const validateReview = (req, res, next) => {
+    let {error} = reveiewSchema.validate(req.body);
+    if(error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError (404, errMsg);
+    } else {
+        next();
+    }
+}
 //Index Route
 app.get("/listings",wrapAsync( async (req, res) => {
     const allListings = await Listing.find({});
@@ -120,7 +130,7 @@ app.delete("/listings/:id", wrapAsync(  async (req, res) => {
 // Reviews Route
 // Post Route
 
-app.post("/listings/:id/reviews", async (req,res) => {
+app.post("/listings/:id/reviews", validateReview, wrapAsync( async (req,res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
 
@@ -131,7 +141,7 @@ app.post("/listings/:id/reviews", async (req,res) => {
 
     return res.redirect(`/listings/${listing._id}`);   
 
-});
+}));
 
 
 // This is just the sample for testing the listing model and saving it to the database, you can remove this code after testing is done.
