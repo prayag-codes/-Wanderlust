@@ -49,7 +49,7 @@ const validateListing = (req, res, next) => {
 }
 
 const validateReview = (req, res, next) => {
-    let {error} = reveiewSchema.validate(req.body);
+    let {error} = reveiewSchema.validate(req.body, {convert: true });
     if(error) {
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError (404, errMsg);
@@ -69,34 +69,34 @@ app.get("/listings/new" , (req, res) => {
 });
 
 //Show Route
-// app.get("/listings/:id", async (req, res) => {
-//     let {id} = req.params;
-//     const listing = await Listing.findById(id);
-//     console.log("Listing =", listing);
-//     res.render("listings/show.ejs", { listing });
-// });
+app.get("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    const listing = await Listing.findById(id).populate("reviews");
+    console.log("Listing =", listing);
+    res.render("listings/show.ejs", { listing });
+});
 
-app.get("/listings/:id", wrapAsync(  async (req, res) => {
-    try {
-        console.log("SHOW ROUTE HIT");
+// app.get("/listings/:id", wrapAsync(  async (req, res) => {
+//     try {
+//         console.log("SHOW ROUTE HIT");
 
-        let { id } = req.params;
-        console.log("ID =", id);
+//         let { id } = req.params;
+//         console.log("ID =", id);
 
-        const listing = await Listing.findById(id);
-        console.log("Listing =", listing);
+//         const listing = await Listing.findById(id);
+//         console.log("Listing =", listing);
 
-        if (!listing) {
-            return res.send("Listing not found");
-        }
+//         if (!listing) {
+//             return res.send("Listing not found");
+//         }
 
-        res.render("listings/show.ejs", { listing });
+//         res.render("listings/show.ejs", { listing });
 
-    } catch (err) {
-        console.log("ERROR =", err);
-        res.send(err.message);
-    }
-}));
+//     } catch (err) {
+//         console.log("ERROR =", err);
+//         res.send(err.message);
+//     }
+// }));
 
 // Create Route
 app.post("/listings",validateListing , wrapAsync(async (req, res, next) => {
@@ -143,6 +143,15 @@ app.post("/listings/:id/reviews", validateReview, wrapAsync( async (req,res) => 
 
 }));
 
+// Delete Review Route
+
+app.delete("/listings/:id/reviews/:reviewID", wrapAsync (async (req,res) => {
+    let {id, reviewID} = req.params;
+    await Listing.findByIdAndUpdate(id, {pull : {reviews : reviewID}});
+    await Review.findByIdAndDelete(reviewID);
+
+    res.redirect(`/listings/${id}`);
+}));
 
 // This is just the sample for testing the listing model and saving it to the database, you can remove this code after testing is done.
 // app.get("/testListing", async (req,res) => {
