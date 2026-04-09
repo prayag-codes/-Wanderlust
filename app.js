@@ -71,8 +71,9 @@ app.get("/listings/new" , (req, res) => {
 //Show Route
 app.get("/listings/:id", async (req, res) => {
     let {id} = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(req.params.id).populate("reviews");
     console.log("Listing =", listing);
+    console.log("Reviews =", listing.reviews);
     res.render("listings/show.ejs", { listing });
 });
 
