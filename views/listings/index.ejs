@@ -13,7 +13,7 @@
         <div class="card listing-card">
 
           <img
-            src="<%= listing.image.url %>"
+            <img src="<%= typeof listing.image === 'string' ? listing.image : listing.image?.url %>" alt="listing_image"
             class="card-img-top"
             style="height:20rem"
           />
