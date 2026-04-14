@@ -2,9 +2,29 @@ const express = require("express");
 const app = express();
 const post = require("./routes/post.js");
 const users = require("./routes/user.js");
+const cookieParser = require("cookie-parser");
+
+app.use(cookieParser("secretcode"));
+
+app.get("/getsignedcookies", (req, res) => {
+    res.cookie("made-in", "India", { signed:true});
+    res.send("Sent you some signed cookies!");
+});
+
+app.get("/verify", (req, res) => {
+    console.log(req.cookies);
+    res.send("Verfied the cookies, check the console!");
+});
+
+app.get("/getcookies", (req, res) => {
+    res.cookie("Greet", "Hello World");
+    res.send("Sent you some cookies!");
+});
+
 
 app.get("/" , (req,res) => {
-    res.send("Hello, I am a server Route!!");
+    let {name = "anonymous"} =  req.cookies;
+    res.send(`Hello, ${name}! Welcome to our website.`);
 });
 
 app.use("/users", users);
