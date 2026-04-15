@@ -30,7 +30,7 @@ if (!listing) {
 
     await listing.save();
     await newReview.save();
-
+     req.flash("success", "Successfully added the review!");
     return res.redirect(`/listings/${listing._id}`);   
 
 }));
@@ -41,8 +41,8 @@ router.delete("/:id/reviewID", wrapAsync (async (req,res) => {
     let {id, reviewID} = req.params;
     await Listing.findByIdAndUpdate(id, {pull : {reviews : reviewID}});
     await Review.findByIdAndDelete(reviewID);
-
-    res.redirect(`/listings/${req.pa}`);
+    req.flash("success", "Successfully deleted the review!");
+    res.redirect(`/listings/${id}`);
 }));
 
 module.exports = router;

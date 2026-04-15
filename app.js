@@ -6,11 +6,12 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 const sessionOptions = {
     secret: "mysuypersecretcode",
     resave:false,
-    saveUnitialized: true,
+    saveUninitialized: true,
     cookie: {
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -18,10 +19,18 @@ const sessionOptions = {
     },
 };
 
+app.get("/" , (req,res) => {
+    res.send("Hello World 14 March");
+});
+
 app.use(session(sessionOptions));
+app.use(flash());
 
-
- 
+app.use ((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
 
 const listings = require("./routes/listings.js");
 const reviews = require("./routes/review.js");
@@ -47,14 +56,12 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/" , (req,res) => {
-    res.send("Hello World 14 March");
-});
-
-
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
 
+app.use((req, res) => {
+    res.send("Page not found");
+});
 
 // This is just the sample for testing the listing model and saving it to the database, you can remove this code after testing is done.
 // app.get("/testListing", async (req,res) => {
