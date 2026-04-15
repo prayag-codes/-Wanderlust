@@ -28,13 +28,21 @@ router.get("/new" , (req, res) => {
 });
 
 //Show Route
-router.get("/:id", async(req, res) => {
-    let {id} = req.params;
-    const listing = await Listing.findById(req.params.id).populate("reviews");
-    console.log("Listing =", listing);
-    console.log("Reviews =", listing.reviews);
+router.get("/:id", wrapAsync(async (req, res) => {
+    let { id } = req.params;
+
+    let listing = await Listing.findById(id).populate("reviews");
+
+    // 🔥 ADD THIS CHECK
+    if (!listing) {
+        throw new ExpressError(404, "Listing not found");
+    }
+    
+    console.log("Listing:", listing);
+    console.log("Reviews:", listing.reviews);
+
     res.render("listings/show.ejs", { listing });
-});
+}));
 
 
 // Create Route
