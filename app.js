@@ -11,6 +11,12 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
+const listingRouter = require("./routes/listings.js");
+const reviewRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
+
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+
 const sessionOptions = {
     secret: "mysuypersecretcode",
     resave:false,
@@ -52,11 +58,6 @@ app.get("/demouser", async (req, res) => {
     res.send(registeredUser);
 });
 
-const listings = require("./routes/listings.js");
-const reviews = require("./routes/review.js");
-
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-
 main().then(() => {
     console.log("Connect to DB");
  })
@@ -76,8 +77,11 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
+app.use("/listings", listingRouter);
+app.use("/listings/:id/reviews", reviewRouter);
+app.use("/users", userRouter);
+
+app.use("/", userRouter); 
 
 app.use((req, res) => {
     res.send("Page not found");
