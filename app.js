@@ -48,15 +48,15 @@ app.use ((req, res, next) => {
     next();
 });
 
-app.get("/demouser", async (req, res) => {
-    let fakeUser = new User({
-        email: "test@example.com",
-        username: "Test-User"
-    });
+// app.get("/demouser", async (req, res) => {
+//     let fakeUser = new User({
+//         email: "test@example.com",
+//         username: "Test-User"
+//     });
 
-    let registeredUser = await User.register(fakeUser, "helloWorld");   // 😐This will hash the password and save the user to the database.Also this is the method provided by passport-local-mongoose to register a user.
-    res.send(registeredUser);
-});
+//     let registeredUser = await User.register(fakeUser, "helloWorld");   // 😐This will hash the password and save the user to the database.Also this is the method provided by passport-local-mongoose to register a user.
+//     res.send(registeredUser);
+// });
 
 main().then(() => {
     console.log("Connect to DB");
