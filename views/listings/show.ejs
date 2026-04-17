@@ -6,14 +6,15 @@
     <div class="card col-6 offset-3 show-card listing-card">
         <img src="<%=listing.image.url%>" class="card-img-top show-img" alt="listing_image">
             <div class="card-body">
-                <p class="card-text">
-                    <%= listing.description %><br>
-                    &#8377; <%= listing.price.toLocaleString("en-In") %><br>
-                    <%= listing.location %><br>
-                    <%= listing.country %><br>
-                </p>
+                <p class="card-text">Owned by <i><%= listing.owner ? listing.owner.username : "Unknown User" %></i></p>
+                <p class="card-text"><%= listing.description %></p>
+                <p class="card-text"> &#8377; <%= listing.price.toLocaleString("en-In") %></p>
+                <p class="card-text"><%= listing.location %></p>
+                <p class="card-text"><%= listing.country %></p> 
             </div>
     </div>
+
+    <%= if(CurrUser && CurrUser._id equals(listings.owner._id)) { %>
         <div class="btns">
             <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
 
@@ -21,7 +22,7 @@
                 <button class="btn btn-dark offset-5 ">Delete</button>
             </form>
         </div>
-
+    <% } %>
     <!-- Review form -->
 
         <div class="col-8 offset-3 mb-3">
