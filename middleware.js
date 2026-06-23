@@ -1,6 +1,6 @@
 const Listing = require("./models/listing");    
 const ExpressError = require("./utils/ExpressError.js")
-const { listingSchema, reveiewSchema } = require("./schema.js");
+const { listingSchema, reviewSchema } = require("./schema.js");
 
 module.exports.isloggedIn =(req, res, next) => {
 console.log(req.path, ".." , req.originalUrl);
@@ -41,7 +41,7 @@ module.exports.validateListing = (req, res, next) => {
 
 
 module.exports.validateReview = (req, res, next) => {
-    let {error} = reveiewSchema.validate(req.body, {convert: true });
+    let {error} = reviewSchema.validate(req.body, {convert: true });
     if(error) {
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError (404, errMsg);

@@ -3,6 +3,8 @@ const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
 const Listing = require("../models/listing.js");
 const { isloggedIn, isOwner, validateListing } = require("../middleware.js");
+const { listingSchema } = require("../schema.js");
+const ExpressError = require("../utils/ExpressError.js");
 
 //Index Route
 router.get("/", wrapAsync(async (req, res) => {
@@ -40,7 +42,7 @@ router.get("/:id", wrapAsync(async (req, res) => {
 
 
 // Create Route
-router.post("/",isloggedIn,wrapAsync(async (req, res) => {
+router.post("/", isloggedIn, validateListing, wrapAsync(async (req, res) => {
 
     if (!req.body.listing.image) {
         req.body.listing.image = { url: "" };
@@ -54,13 +56,7 @@ router.post("/",isloggedIn,wrapAsync(async (req, res) => {
 
     req.body.listing.image = { url: imageUrl };
 
-    // 👉 अब validation करो
-    const { error } = listingSchema.validate(req.body);
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }
-
+    // 👉 validation AFTER fixing data
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id; 
     await newListing.save();
@@ -103,11 +99,7 @@ router.put("/:id",isloggedIn,isOwner,validateListing, wrapAsync(async (req, res)
     req.body.listing.image = { url: imageUrl };
 
     // 👉 validation AFTER fixing data
-    const { error } = listingSchema.validate(req.body);
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }
+    
     await Listing.findByIdAndUpdate(id, req.body.listing);
     req.flash("success", "Successfully updated the listing!");
     res.redirect(`/listings/${id}`);
